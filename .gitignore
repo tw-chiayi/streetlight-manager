@@ -5,6 +5,7 @@ application/config/constant.php
 application/config/facebook.php
 
 application/config/database.php
+application/config/config.php
 
 application/cache/*
 !application/cache/index.html
