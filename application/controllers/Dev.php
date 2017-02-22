@@ -49,14 +49,14 @@ class Dev extends MY_Controller {
           $name = $name." ".$ctime;
         }
       }
-
+      // die(var_dump($light->geometry->coordinates));
       $this->lightModel->insert([
         "name" => $name,
         "ctime" => $ctime,
         "mtime" => $ctime,
         "lat" => $light->geometry->coordinates[0],
         "lng" => $light->geometry->coordinates[1],
-        "height" => $light->geometry->coordinates[2],
+        "height" => isset($light->geometry->coordinates[2]) ? $light->geometry->coordinates[2] : null,
         "status" => 0,
         "type" => $type
       ]);

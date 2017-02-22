@@ -11,9 +11,22 @@ class LightModel extends CI_Model {
 
   public function insert($light){
     // ["鹿東", "後寮", "鹿草", "豊稠", "西井", "重寮", "施家", "下潭", "光潭", "碧潭", "竹山", "松竹", "三角", "後堀", "下麻"]
-
+    if($this->check_light_exist((object)($light))){
+      return false;
+    }
+    echo "light ".$light["name"]." not exist <br />";
+    // return true;
+    // die(var_dump($light));
     $this->db->insert($this->_table,$light);
+  }
 
+  public function check_light_exist($light){
+    $this->db->select("count(*) as cnt");
+    $this->db->where("lat","".$light->lat);
+    $this->db->where("lng","".$light->lng);
+    $q = $this->db->get($this->_table);
+
+    return array_first_item($q->result())->cnt != 0;
   }
 
   public function get_all(){

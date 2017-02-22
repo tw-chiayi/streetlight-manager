@@ -10,7 +10,7 @@
     <?php } ?>
     <table class="table table-bordered">
       <tr><td>帳號</td><td> <input type="text" name="account" /></td></tr>
-      <tr><td>密碼 </td><td><input type="text" name="pwd" /></td></tr>
+      <tr><td>密碼 </td><td><input type="password" name="pwd" /></td></tr>
       <tr><td colspan="2"><button> 送出 </button> </td></tr>
     </table>
   </form>
