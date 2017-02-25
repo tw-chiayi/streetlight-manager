@@ -24,7 +24,7 @@
         <td>名字</td>
         <td>村子</td>
         <td>上次回報時間</td>
-        <td><label><input type="checkbox" id="chkAll" />全選</label></td>
+        <td><label><input checked type="checkbox" id="chkAll" />全選</label></td>
       </tr>
       <?php 
       $count_status = ["0" => "正常運作" , "1" => "維修中" , "2" => "已停用"];
@@ -36,7 +36,7 @@
         <td><?=h($light->name)?></td>
         <td><?=h($light->town_name)?></td>
         <td><?=_date_format_utc($light->mtime)?></td>
-        <td><label><input class="chks" type="checkbox" name="ids[]" value="<?=h($light->id)?>" /> 選擇</label></td>
+        <td><label><input checked class="chks" type="checkbox" name="ids[]" value="<?=h($light->id)?>" /> 選擇</label></td>
       </tr>
       <?php } ?>
     </table>
