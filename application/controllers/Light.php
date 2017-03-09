@@ -10,6 +10,10 @@ class Light extends MY_Controller {
 		$this->load->model("lightModel");
 	}
 
+	public function index(){
+		$this->map();
+	}
+
 	public function map()
 	{
 		$this->load->view('light/map',

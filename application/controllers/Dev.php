@@ -27,18 +27,29 @@ class Dev extends MY_Controller {
     $this->load->database();
 
     $obj = json_decode($lucao);
+
+    // die(var_dump(count($obj->features)));
     foreach($obj->features as $ind => $light){
-      if($ind < 3574){
+
+      if(is_array($light->geometry->coordinates[0])){ //skip linestring
         continue;
       }
       $name = $light->properties->name;
-      $ctime = $light->properties->cmt;
+
+      $ctime = null;
+      if(isset($light->properties->cmt)){
+        $ctime = $light->properties->cmt;
+      }
 
       if(isset($light->properties->time)){
         $ctime = $light->properties->time;
       }
 
-      $type = $light->properties->sym;
+      $type = null;
+
+      if(isset($light->properties->sym)){
+        $type = $light->properties->sym;
+      }
 
       // ["鹿東", "後寮", "鹿草", "豊稠", "西井", "重寮", "施家", "下潭", "光潭", "碧潭", "竹山", "松竹", "三角", "後堀", "下麻"] 
 

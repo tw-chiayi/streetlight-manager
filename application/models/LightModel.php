@@ -14,14 +14,35 @@ class LightModel extends CI_Model {
     if($this->check_light_exist((object)($light))){
       return false;
     }
-    echo "light ".$light["name"]." not exist <br />";
+
+    if($this->check_light_name_exist((object)($light))){
+      echo "light ".$light["name"]." not exist and name exist <br />";
+    }else{
+      echo "light ".$light["name"]." not exist <br />";
+    }
     // return true;
     // die(var_dump($light));
     $this->db->insert($this->_table,$light);
   }
 
+  public function check_light_name_exist($light){
+    $this->db->select("count(*) as cnt");
+
+    if(is_array($light->lat)){
+      die(var_dump($light));
+    }
+    $this->db->where("name","".$light->name);
+    $q = $this->db->get($this->_table);
+
+    return array_first_item($q->result())->cnt != 0;
+  }
+
   public function check_light_exist($light){
     $this->db->select("count(*) as cnt");
+
+    if(is_array($light->lat)){
+      die(var_dump($light));
+    }
     $this->db->where("lat","".$light->lat);
     $this->db->where("lng","".$light->lng);
     $q = $this->db->get($this->_table);
