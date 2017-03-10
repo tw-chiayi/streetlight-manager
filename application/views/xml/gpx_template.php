@@ -11,7 +11,9 @@
 
   <?php foreach($lights as $light){ ?>
   <wpt lat="<?=$light->lng?>" lon="<?=$light->lat?>">
+  <?php if(0){ ?>
     <ele><?=$light->height?></ele>
+  <?php } ?>
     <name><?=$light->name?></name>
     <cmt></cmt>
     <desc></desc>
