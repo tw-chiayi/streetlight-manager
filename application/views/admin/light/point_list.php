@@ -43,7 +43,8 @@
   </div>
 
   <p>燈號搜尋：<input type="text" name="search" /></p>
-  
+    
+  <p id="message" style='color:red;'></p>
   <div id="mapid" style="width: 100%; height: 600px"></div>
     
   <hr />
@@ -66,6 +67,24 @@
 
   <script>
 
+    var greenIcon = new L.Icon({
+      iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+    var violetIcon = new L.Icon({
+      iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+
+
     // var center = [25.043325,121.5195076];
     var point = window.points[0];
     var center = [point.lat,point.lng];
@@ -75,13 +94,56 @@
 
     var markers = L.markerClusterGroup({disableClusteringAtZoom:17,spiderfyOnMaxZoom:false});
 
+    window.reloc = function(id){
+      $(".leaflet-popup-close-button")[0].click()
+      $("#message").text("請選擇你要修改的新位置");
+    };
     var autocompletes = [];
+    var helper = null;
     $.each(window.points,function(ind,point){
 
       if(point.status == 0){
-        var marker = L.marker([point.lat,point.lng],{title:point.name});
+        var marker = L.marker([point.lat,point.lng],{
+          title:point.name,
+          draggable: true
+        });
         marker.bindPopup('<h1>'+point.name+'</h1><p>所屬：'+point.city+point.town_name+'</p>'+
-          '<a target="_blank" href="<?=site_url('light/report/')?>/'+point.id+'">回報路燈問題</a><p></p>');
+          '<a target="_blank" href="<?=site_url('light/report/')?>/'+point.id+'">回報路燈問題</a><p></p>'
+          );
+        marker.on('dragstart', function (e) {
+          helper =  L.marker([point.lat,point.lng],{
+            title:point.name,
+            icon:greenIcon
+          });
+          // marker.setIcon(violetIcon);
+          mymap.addLayer(helper);
+
+        });
+        marker.on('dragend', function (e) {
+
+          if(window.confirm("您正在修改路燈，是否確定？")){
+            var latlng = e.target.getLatLng();
+            $.post("/admin/light/change_loc/"+point.id,{lat:latlng.lat,lng:latlng.lng},
+              function(strRes){
+                var res = JSON.parse(strRes);
+                if(res.success){
+                  $("#message").text("修改成功");
+                  point.lat = e.target.getLatLng().lat;
+                  point.lng = e.target.getLatLng().lng;
+                  marker.setLatLng(e.target.getLatLng());
+                }else{
+                  $("#message").text("修改失敗");
+                  marker.setLatLng([point.lat,point.lng]);
+                }
+            });
+          }else{
+            marker.setLatLng([point.lat,point.lng]);
+          }
+
+          mymap.removeLayer(helper);
+          //e.latlng
+          //e.oldLatLng
+        });
         markers.addLayer(marker);
       }else{
         var redIcon = new L.Icon({
@@ -92,7 +154,41 @@
           popupAnchor: [1, -34],
           shadowSize: [41, 41]
         });
-        var marker = L.marker([point.lat,point.lng],{icon:redIcon,title:point.name});
+        var marker = L.marker([point.lat,point.lng],{icon:redIcon,title:point.name,
+          draggable: true});
+        marker.on('dragstart', function (e) {
+          helper =  L.marker([point.lat,point.lng],{
+            title:point.name,
+            icon:greenIcon
+          });
+          // marker.setIcon(violetIcon);
+          mymap.addLayer(helper);
+        });
+        marker.on('dragend', function (e) {
+
+          if(window.confirm("您正在修改路燈，是否確定？")){
+            var latlng = e.target.getLatLng();
+            $.post("/admin/light/change_loc/"+point.id,{lat:latlng.lat,lng:latlng.lng},
+              function(strRes){
+                var res = JSON.parse(strRes);
+                if(res.success){
+                  $("#message").text("修改成功");
+                  point.lat = e.target.getLatLng().lat;
+                  point.lng = e.target.getLatLng().lng;
+                  marker.setLatLng(e.target.getLatLng());
+                }else{
+                  $("#message").text("修改失敗");
+                  marker.setLatLng([point.lat,point.lng]);
+                }
+            });
+          }else{
+            marker.setLatLng([point.lat,point.lng]);
+          }
+
+          mymap.removeLayer(helper);
+          //e.latlng
+          //e.oldLatLng
+        });
         marker.bindPopup('<h1>'+point.name+'</h1><p>所屬：'+point.city+point.town_name+'</p><p style="color:red;">路燈報修中</p>');
         
         // markers.addLayer(marker);
@@ -136,6 +232,16 @@
     }).addTo(mymap);
 
     mymap.addControl(new L.Control.Layers( {'開放街圖':osm,"Google 衛星":roads2,'Google':roads}, {}));
+
+    mymap.on('contextmenu', function(e) { 
+      var temp = L.marker(e.latlng,{
+        title:point.name,
+        icon:greenIcon
+      });
+      temp.bindPopup('<a href="">新增路燈</a>');
+      temp.addTo(mymap);
+    });
+
   </script>
   
 </div>

@@ -10,7 +10,7 @@
   </metadata>
 
   <?php foreach($lights as $light){ ?>
-  <wpt lat="<?=$light->lng?>" lon="<?=$light->lat?>">
+  <wpt lat="<?=$light->lat?>" lon="<?=$light->lng?>">
   <?php if(0){ ?>
     <ele><?=$light->height?></ele>
   <?php } ?>

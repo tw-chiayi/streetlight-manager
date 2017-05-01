@@ -25,6 +25,14 @@ class Light extends MY_ADMIN_Controller {
       ] );
   }
 
+  public function point_list(){
+    $this->load->view('admin/light/point_list',
+      [
+        "points" => $this->lightModel->get_all_for_map( )
+      ] );
+    session_write_close();    
+  }
+
   public function reports(){
 
     $unCity = $_SESSION["user"]->city;
@@ -52,6 +60,17 @@ class Light extends MY_ADMIN_Controller {
     $this->lightModel->set_report_status($report,$status);
 
     redirect("admin/light/index");
+  }
+
+  public function change_loc($id){
+    $lat = $this->input->post("lat");
+    $lng = $this->input->post("lng");
+
+
+    $ret = $this->lightModel->change_light_loc($id,$lat,$lng);
+
+    die(json_encode(["success"=>$ret]));
+
   }
 
   public function action_submit(){

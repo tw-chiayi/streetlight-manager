@@ -84,7 +84,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li><a href="<?=site_url("/admin/light/index")?>">後台首頁</a></li>
-        <!-- <li><a href="<?=site_url("/lights")?>">路燈管理</a></li> -->
+        <li><a href="<?=site_url("/admin/light/point_list")?>">路燈管理</a></li>
         <li><a href="<?=site_url("/admin/light/reports")?>">過去三個月報修紀錄</a></li>
         <li><a href="<?=site_url("/admin/light/repair")?>">維修中路燈</a></li>
       </ul>

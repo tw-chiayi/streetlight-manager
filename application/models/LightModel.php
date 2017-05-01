@@ -175,5 +175,30 @@ class LightModel extends CI_Model {
 
   }
 
+  public function change_light_loc($id,$lat,$lng){
+    $point = $this->get($id);
+
+    if($point == null){
+      return false;
+    }
+
+    $this->db->insert("light_change_log",Array(
+      "light_id" => $id,
+      "lat"=>$lat,
+      "lng"=>$lng,
+      "old_lat"=> $point->lat,
+      "old_lng"=> $point->lng,
+    ));
+
+    $this->db->set(Array("lat"=>$lat,"lng"=>$lng));
+
+    $this->db->where("id",$id);
+    $this->db->update($this->_table);
+
+
+    return true;
+
+  }
+
   
 }
