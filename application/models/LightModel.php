@@ -57,10 +57,13 @@ class LightModel extends CI_Model {
 
   public function get_all_for_map(){
 
-    $this->db->select("l.status,l.lat,l.lng,l.id,l.name,t.city,t.name as town_name,l.town_id");
+    $this->db->select("l.status,l.lat,l.lng,l.id,l.name,t.city,t.name as town_name,l.town_id,
+      (select count(*) from light_report where status = 0 and light_id = l.id ) as reporting_count ");
     $this->db->join("town t","l.town_id = t.id");
 
-    return $this->db->get($this->_table." l")->result();
+    $q = $this->db->get($this->_table." l");
+
+    return $q->result();
   }
 
   public function get($id){
@@ -175,6 +178,12 @@ class LightModel extends CI_Model {
 
   }
 
+  public function get_last_report_update_time(){
+    $this->db->select("max(mtime) as max_time");
+    $q = $this->db->get($this->_table_light_report);
+    return array_first_item($q->result())->max_time;
+  }
+
   public function change_light_loc($id,$lat,$lng){
     $point = $this->get($id);
 
@@ -197,6 +206,20 @@ class LightModel extends CI_Model {
 
 
     return true;
+
+  }
+
+
+  public function get_recent_report(){
+    $this->db->select("l.name as light_name,l.status as light_status,r.*");
+    
+    $this->db->join($this->_table." l"," l.id = r.light_id");
+    $this->db->join("town t","l.town_id = t.id");
+    $this->db->where("r.mtime > (current_date - interval '30' day)",null,false);
+    $this->db->or_where("r.status",0);
+
+    $q = $this->db->get($this->_table_light_report." r");
+    return $q->result();
 
   }
 

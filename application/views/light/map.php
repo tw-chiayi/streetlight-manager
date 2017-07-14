@@ -45,7 +45,8 @@
   <p>燈號搜尋：<input type="text" name="search" /></p>
   
   <div id="mapid" style="width: 100%; height: 600px"></div>
-    
+  
+  <p>最後回報與更新時間：<?=_date_format_utc($last_report_update_time)?></p>
   <hr />
   <p>Power by <a href="https://github.com/tony1223/" target="_blank">智慧城市與青年創業推動辦公室</a> </p>
   
@@ -79,10 +80,30 @@
     $.each(window.points,function(ind,point){
 
       if(point.status == 0){
-        var marker = L.marker([point.lat,point.lng],{title:point.name});
-        marker.bindPopup('<h1>'+point.name+'</h1><p>所屬：'+point.city+point.town_name+'</p>'+
-          '<a target="_blank" href="<?=site_url('light/report/')?>/'+point.id+'">回報路燈問題</a><p></p>');
-        markers.addLayer(marker);
+
+        if(point.reporting_count > 0 ){
+          var redIcon = new L.Icon({
+            iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+          });
+
+          var marker = L.marker([point.lat,point.lng],{icon:redIcon,title:point.name});
+          marker.bindPopup('<h1>'+point.name+'</h1><p>所屬：'+point.city+point.town_name+'</p><p style="color:red;">已被回報，尚待確認。</p>'+
+            '<a target="_blank" href="<?=site_url('light/report/')?>/'+point.id+'">我也要回報這個路燈</a><p></p>');
+          
+          // markers.addLayer(marker);
+          mymap.addLayer(marker);
+        }else{
+          var marker = L.marker([point.lat,point.lng],{title:point.name});
+          marker.bindPopup('<h1>'+point.name+'</h1><p>所屬：'+point.city+point.town_name+'</p>'+
+            '<a target="_blank" href="<?=site_url('light/report/')?>/'+point.id+'">回報路燈問題</a><p></p>');
+          markers.addLayer(marker);          
+        }
+
       }else{
         var redIcon = new L.Icon({
           iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',

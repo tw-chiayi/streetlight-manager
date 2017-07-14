@@ -85,6 +85,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       <ul class="nav navbar-nav">
         <li><a href="<?=site_url("/")?>">首頁</a></li>
         <li><a href="<?=site_url("/light/map")?>">路燈地圖</a></li>
+        <li><a href="<?=site_url("/light/recent_report")?>">最近回報紀錄</a></li>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->

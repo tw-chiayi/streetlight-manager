@@ -16,10 +16,18 @@ class Light extends MY_Controller {
 
 	public function map()
 	{
-		$this->load->view('light/map',
-			[
-				"points" => $this->lightModel->get_all_for_map(	)
-			] );
+		$this->load->view('light/map',[
+			"points" => $this->lightModel->get_all_for_map(),
+			"last_report_update_time" => $this->lightModel->get_last_report_update_time()
+		]);
+		session_write_close();
+	}
+
+	public function recent_report(){
+		$this->load->view('light/recent_report',[
+			"reports" => $this->lightModel->get_recent_report(),
+			"last_report_update_time" => $this->lightModel->get_last_report_update_time()
+		]);
 		session_write_close();
 	}
 
