@@ -218,6 +218,8 @@ class LightModel extends CI_Model {
     $this->db->where("r.mtime > (current_date - interval '30' day)",null,false);
     $this->db->or_where("r.status",0);
 
+    $this->db->order_by("r.ctime desc");
+
     $q = $this->db->get($this->_table_light_report." r");
     return $q->result();
 
